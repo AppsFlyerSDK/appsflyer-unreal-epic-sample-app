@@ -3,6 +3,7 @@ title: Unreal Epic
 category: 6446526dddf659006c7ea807
 order: 2
 hidden: true
+slug: unreal-epic
 ---
 
 # AppsFlyer Unreal Epic Integration
