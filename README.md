@@ -1,3 +1,10 @@
+---
+title: Unreal Epic
+category: 6446526dddf659006c7ea807
+order: 2
+hidden: true
+---
+
 # AppsFlyer Unreal Epic Integration
 
 > 🚧 OS-Restriction
@@ -151,7 +158,6 @@ And the following function:
 void AEpicTestGameMode::StartPlay()
 {
 	Super::StartPlay();
-	AppsflyerEpicModule()->start("DEV_KEY", "APP_ID");
 
 	EOS_InitializeOptions SDKOptions;
 	SDKOptions.ApiVersion = EOS_INITIALIZE_API_LATEST;
@@ -181,21 +187,23 @@ void AEpicTestGameMode::StartPlay()
 		PlatformOptions.DeploymentId = "DEPLOYMENT_ID";
 		PlatformOptions.EncryptionKey = "ENCRYPTION_KEY";
 		EOS_HPlatform platform = EOS_Platform_Create(&PlatformOptions);
-		EOS_HUserInfo hUserInfo = EOS_Platform_GetUserInfoInterface(platform);
-		EOS_UserInfo_QueryUserInfoOptions queryOpts;
-		EOS_UserInfo_QueryUserInfo(hUserInfo, &queryOpts, );
-		UE_LOG(LogTemp, Warning, TEXT("EOS success init"));
+
+		// af module init
+		AppsflyerEpicModule()->init("bFzaVu2iecN77po5mWMJuL", "butterflyer");
+		// af send firstopen/session
+		AppsflyerEpicModule()->start();
+
+		//set event name
+		std::string event_name = "af_purchase";
+		//set json string
+		std::string event_values = "{\"af_currency\":\"USD\",\"af_price\":6.66,\"af_revenue\":24.12}";
+		// af send inapp event
+		AppsflyerEpicModule()->logEvent(event_name, event_values);
 	}
 	else {
 		UE_LOG(LogTemp, Warning, TEXT("EOS FAIL"));
 		return;
 	}
-
-	//set event name
-	std::string event_name = "af_purchase";
-	//set json string
-	std::string event_values = "{\"af_currency\":\"USD\",\"af_price\":6.66,\"af_revenue\":24.12}";
-	AppsflyerEpicModule()->logEvent(event_name, event_values);
 }
 ```
 
