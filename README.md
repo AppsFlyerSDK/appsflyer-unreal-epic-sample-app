@@ -6,6 +6,9 @@ hidden: true
 slug: unreal-epic
 ---
 
+> Link to repository
+> [GitHub](https://github.com/AppsFlyerSDK/appsflyer-unreal-epic-sample-app)
+
 # AppsFlyer Unreal Epic Integration
 
 > 🚧 OS-Restriction
