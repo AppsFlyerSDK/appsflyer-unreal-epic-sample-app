@@ -37,7 +37,7 @@ This method receives your API key and app ID and initializes the AppsFlyer Modul
 AppsflyerEpicModule()->start("DEV_KEY", "EPIC_APP_ID");
 ```
 
-**Arguments**:
+<span id="app-details">**Arguments**:</span>
 
 - `DEV_KEY`: Get from the marketer or [AppsFlyer HQ](https://support.appsflyer.com/hc/en-us/articles/211719806-App-settings-#general-app-settings).
 - `EPIC_APP_ID`: Found in the [Epic Dev Portal](https://dev.epicgames.com/portal/en-US/).
@@ -141,7 +141,7 @@ public:
 #include "AppsflyerEpicModule/AppsflyerEpicModule.cpp"
 ```
 
-10. Add the following function, making sure to replace `DEV_KEY` and `EPIC_APP_ID` in the [`start`](#void-startconst-char-devkey-const-char-appid) function with your [app details](#App-Details) and to initialize the EOS SDK options.
+10. Add the following function, making sure to replace `DEV_KEY` and `EPIC_APP_ID` in the [`start`](#void-startconst-char-devkey-const-char-appid) function with your [app details](#app-details) and to initialize the EOS SDK options.
 
 ```
 void AEpicTestGameMode::StartPlay()
