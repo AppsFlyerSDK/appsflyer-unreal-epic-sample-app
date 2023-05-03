@@ -6,54 +6,47 @@ hidden: false
 slug: unreal-epic
 ---
 
-> Link to repository
+> Link to repository  
 > [GitHub](https://github.com/AppsFlyerSDK/appsflyer-unreal-epic-sample-app)
 
-# AppsFlyer Unreal Epic Integration
+# AppsFlyer Unreal Epic SDK integration
 
-> 🚧 OS Restriction
->
-> This sample code currently supports windows environment only.
+AppsFlyer empowers gaming marketers to make better decisions by providing powerful tools to perform cross-platform attribution.
 
-## **Getting started with AppsFlyer Unreal Epic Integration**
+Game attribution requires the game to integrate the AppsFlyer SDK that records first opens, consecutive sessions, and in-app events. For example, purchase events.
+We recommend you use this sample app as a reference for integrating the AppsFlyer SDK into your Unreal Epic game. **Note**: The sample code that follows is currently only supported in a Windows environment.
 
-AppsFlyer empowers marketers to make better decisions by providing game marketers with powerful tools to perform cross-platform attribution.
-Game attribution requires the game to integrate an AppsFlyer SDK, which handles first open, consecutive sessions, and in-app events. For example, purchase events.
+**Prerequisites**:
 
-We recommend you use this sample app as a reference for integrating AppsFlyer SDK into your Unreal-Epic game.
+- Unreal Engine 4.2x.
+- [EOS Subsystem](https://docs.unrealengine.com/4.27/en-US/ProgrammingAndScripting/Online/EOS/) integrated within your UE4 (usually it’s included within the UE4 third-parties and there’s no need to download it).
 
 <hr/>
 
-### Prerequisite
+## AppsflyerEpicModule - Interface
 
-1. Unreal Engine 4.2x
-2. [EOS Subsystem](https://docs.unrealengine.com/4.27/en-US/ProgrammingAndScripting/Online/EOS/) integrated within your UE4 (it's included within the UE4 3rd parties, there is no need to download it)
-<hr/>
-
-## **AppsflyerEpicModule - Interface**
-
-`AppsflyerEpicModule.h`, included in the folder above, contains the required code and logic to connect to our servers and report events.
+`AppsflyerEpicModule.h`, included in the `appsflyer-unreal-epic-sample-app/AppsflyerEpicIntegrationFiles/AppsflyerEpicModule` folder, contains the required code and logic to connect to AppsFlyer servers and report events.
 
 ### `void start(const char* devkey, const char* appID)`
 
-This method receives your api key and app id, and initializes the AppsFlyer Module (sends “first open/session” request to AppsFlyer).
+This method receives your API key and app ID and initializes the AppsFlyer Module that sends first open and session requests to AppsFlyer.
 
-_Usage_:
+**Usage**:
 
 ```
 AppsflyerEpicModule()->start("DEV_KEY", "EPIC_APP_ID");
 ```
 
-_Arguments_:
+**Arguments**:
 
-- DEV_KEY - retrieve the Dev key from the marketer or the [AppsFlyer HQ](https://support.appsflyer.com/hc/en-us/articles/211719806-App-settings-#general-app-settings).
-- EPIC_APP_ID - you may find your app id on the [Epic Dev Portal](https://dev.epicgames.com/portal/en-US/).
+- `DEV_KEY`: Get from the marketer or [AppsFlyer HQ](https://support.appsflyer.com/hc/en-us/articles/211719806-App-settings-#general-app-settings).
+- `EPIC_APP_ID`: Found in the [Epic Dev Portal](https://dev.epicgames.com/portal/en-US/).
 
 ### `void **logEvent**(std::string **event_name**, json **event_values**)`
 
-This method receives an event name and json object and sends an in-app event to AppsFlyer.
+This method receives an event name and JSON object and sends in-app events to AppsFlyer.
 
-_Usage_:
+**Usage**:
 
 ```
 //set event name
@@ -63,28 +56,24 @@ std::string event_values = "{\"af_currency\":\"USD\",\"af_price\":6.66,\"af_reve
 AppsflyerEpicModule()->logEvent(event_name, event_values);
 ```
 
-## Running the Sample App
+## Running the sample app
 
-1. Open UE4 engine.
-2. Choose New Project -> Games -> First Person
-3. Choose C++ instead of Blueprints
-4. Name the project AppsFlyerSample and press "create project".
-5. Follow [the steps below](#implementing-appsflyer-into-your-own-epic-game)
-6. Launch the sample app from the UE4 engine editor
-7. After 24 hours, the dashboard will update and show organic/non-organic install and in-app events.
+1. Open the UE4 engine.
+2. Choose **New Project** > **Games** > **First Person**.
+3. Choose C++ (instead of Blueprints).
+4. Name the project `AppsFlyerSample` and click **Create project**.
+5. Follow the [instructions to implement AppsFlyer in your Epic game](#implementing-appsflyer-in-your-epic-game).
+6. Launch the sample app from the UE4 engine editor.
+7. After 24 hours, the dashboard updates and shows organic and non-organic installs and in-app events.
 
-<hr/>
+## **Implementing AppsFlyer in your Epic game**
 
-## **Implementing AppsFlyer into your own Epic game**
+### Setup
 
-### Set Up
-
-1. Make sure that Epic is in your UE4 third parties https://docs.unrealengine.com/4.27/en-US/ProgrammingAndScripting/Online/EOS/
-2. Add the following definitions to `Config/DefaultEngine.ini`:
-   (for reference please check `appsflyer-unreal-Epic-sample-app/AppsflyerEpicIntegrationFiles/DefaultEngine.ini` file)
+1. Make sure that Epic is in your UE4 third parties. [Learn more](https://docs.unrealengine.com/4.27/en-US/ProgrammingAndScripting/Online/EOS/)
+2. Add the following definitions to `Config/DefaultEngine.ini` while replacing the `confidential` credentials with your EOS credentials. For reference, see the `appsflyer-unreal-Epic-sample-app/AppsflyerEpicIntegrationFiles/DefaultEngine.ini` file.
 
 ```
-
 [OnlineSubsystem]
 DefaultPlatformService=EOSPlus
 
@@ -115,26 +104,24 @@ bUseEOSSessions=True
 bMirrorPresenceToEAS=False
 ```
 
-Please replace the "Confidential" credentials with your EOS credentials.
-
-3. In your unreal editor, go to plugins and activate "Online Subsystem Steam", then restart the editor.
-4. Open your the project in your preferred C++ editor, then in `[YOUR-APP-NAME].Build.cs` file add `OpenSSL`, `OnlineSubsystem`, `OnlineSubsystemEOS` to your dependencies:
+3. In your Unreal editor, go to **Plugins**, activate **Online Subsystem Steam**, and then restart the editor.
+4. Open the project in your preferred C++ editor and in the `[YOUR-APP-NAME].Build.cs` file, add `OpenSSL`, `OnlineSubsystem`, and `OnlineSubsystemEOS` to your dependencies:
 
 ```
 PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "HeadMountedDisplay", "OpenSSL", "OnlineSubsystem", "OnlineSubsystemEOS" });
 ```
 
-5. In your Unreal Project files, under **"Source"** directory, create a new directory under the name **"AppsflyerSteamModule"**
-6. Copy the following files from "appsflyer-unreal-epic-sample-app/AppsflyerEpicIntegrationFiles/AppsflyerEpicModule" to the new folder:
+5. In your Unreal Project files, under the **Source** directory, create a new directory named **AppsflyerSteamModule**.
+6. Copy the following files from `appsflyer-unreal-epic-sample-app/AppsflyerEpicIntegrationFiles/AppsflyerEpicModule` to the new folder:
 
-- AppsflyerModule.cpp
-- AppsflyerEpicModule.cpp
-- AppsflyerEpicModule.h
-- DeviceID.h
-- RequestData.h
+   - AppsflyerModule.cpp
+   - AppsflyerEpicModule.cpp
+   - AppsflyerEpicModule.h
+   - DeviceID.h
+   - RequestData.h
 
-7. Generate projecte files in order to add OpenSSL https://forums.unrealengine.com/t/how-to-use-included-openssl/670971/2
-8. In the GameMode.h file, add StartPlay() function:
+7. Generate project files in order to add OpenSSL. [Learn more](https://forums.unrealengine.com/t/how-to-use-included-openssl/670971/2)
+8. In the `GameMode.h` file, add the `StartPlay()` function:
 
 ```UCLASS(minimalapi)
 class AAppsFlyerSampleGameMode : public AGameModeBase
@@ -148,17 +135,15 @@ public:
 
 ```
 
-9. Open "Source/AppsFlyerSample/AppsFlyerSampleGameMode.cpp" file
-   Add the following include to your GameMode.cpp file:
+9. Open the `Source/AppsFlyerSample/AppsFlyerSampleGameMode.cpp` file and add the following include to your GameMode.cpp file.
 
 ```
 #include "AppsflyerEpicModule/AppsflyerEpicModule.cpp"
 ```
 
-And the following function:
+10. Add the following function, making sure to replace `DEV_KEY` and `EPIC_APP_ID` in the [`start`](#void-startconst-char-devkey-const-char-appid) function with your [app details](#App-Details) and to initialize the EOS SDK options.
 
 ```
-
 void AEpicTestGameMode::StartPlay()
 {
 	Super::StartPlay();
@@ -211,7 +196,5 @@ void AEpicTestGameMode::StartPlay()
 }
 ```
 
-Make sure to replace **DEV_KEY** and **EPIC_APP_ID** in the [`start`](#void-startconst-char-devkey-const-char-appid) function with your [app details](#App-Details) and to intiziallize the EOS SDK options
-
-10. [Initialize](#void-startconst-char-devkey-const-char-appid) the AppsFlyer integration
-11. Report [in-app events](#void-logeventstdstring-event_name-json-event_values)
+11. [Initialize](#void-startconst-char-devkey-const-char-appid) the AppsFlyer integration.
+12. Report [in-app events](#void-logeventstdstring-event_name-json-event_values)
