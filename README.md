@@ -27,20 +27,35 @@ We recommend you use this sample app as a reference for integrating the AppsFlye
 
 `AppsflyerEpicModule.h`, included in the `appsflyer-unreal-epic-sample-app/AppsflyerEpicIntegrationFiles/AppsflyerEpicModule` folder, contains the required code and logic to connect to AppsFlyer servers and report events.
 
-### `void start(const char* devkey, const char* appID)`
+### `void init(const char* devkey, const char* appID)`
 
-This method receives your API key and app ID and initializes the AppsFlyer Module that sends first open and session requests to AppsFlyer.
+This method receives your API key and app ID and initializes the AppsFlyer Module.
 
 **Usage**:
 
 ```
-AppsflyerEpicModule()->start("DEV_KEY", "EPIC_APP_ID");
+AppsflyerEpicModule()->init("DEV_KEY", "STEAM_APP_ID");
 ```
 
 <span id="app-details">**Arguments**:</span>
 
+- `STEAM_APP_ID`: Found in the [SteamDB](https://steamdb.info/apps/).
 - `DEV_KEY`: Get from the marketer or [AppsFlyer HQ](https://support.appsflyer.com/hc/en-us/articles/211719806-App-settings-#general-app-settings).
-- `EPIC_APP_ID`: Found in the [Epic Dev Portal](https://dev.epicgames.com/portal/en-US/).
+
+### `void start(bool skipFirst = false)`
+
+This method sends first open and /session requests to AppsFlyer.
+
+**Usage**:
+
+```
+// without the flag
+AppsflyerEpicModule()->start();
+
+// with the flag
+bool skipFirst = [SOME_CONDITION];
+AppsflyerEpicModule()->start(skipFirst);
+```
 
 ### `void **logEvent**(std::string **event_name**, json **event_values**)`
 
@@ -141,7 +156,7 @@ public:
 #include "AppsflyerEpicModule/AppsflyerEpicModule.cpp"
 ```
 
-10. Add the following function, making sure to replace `DEV_KEY` and `EPIC_APP_ID` in the [`start`](#void-startconst-char-devkey-const-char-appid) function with your [app details](#app-details) and to initialize the EOS SDK options.
+10. Add the following function, making sure to replace `DEV_KEY` and `EPIC_APP_ID` in the [`init`](#void-initconst-char-devkey-const-char-appid) function with your [app details](#app-details) and initialize the EOS SDK with your EOS details.
 
 ```
 void AEpicTestGameMode::StartPlay()
@@ -178,7 +193,7 @@ void AEpicTestGameMode::StartPlay()
 		EOS_HPlatform platform = EOS_Platform_Create(&PlatformOptions);
 
 		// af module init
-		AppsflyerEpicModule()->init("bFzaVu2iecN77po5mWMJuL", "butterflyer");
+		AppsflyerEpicModule()->init("DEV_KEY", "APP_ID");
 		// af send firstopen/session
 		AppsflyerEpicModule()->start();
 
@@ -196,5 +211,4 @@ void AEpicTestGameMode::StartPlay()
 }
 ```
 
-11. [Initialize](#void-startconst-char-devkey-const-char-appid) the AppsFlyer integration.
-12. Report [in-app events](#void-logeventstdstring-event_name-json-event_values)
+11. Report [in-app events](#void-logeventstdstring-event_name-json-event_values)

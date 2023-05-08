@@ -15,24 +15,22 @@
 
 using namespace std;
 
-CAppsflyerEpicModule *AppsflyerEpicModule()
+
+CAppsflyerEpicModule* AppsflyerEpicModule()
 {
 	static CAppsflyerEpicModule inv;
 	return &inv;
 }
 
-CAppsflyerEpicModule::CAppsflyerEpicModule()
-{
+CAppsflyerEpicModule::CAppsflyerEpicModule() {
 }
 
-void CAppsflyerEpicModule::init(const char *dkey, const char *appid)
-{
+void CAppsflyerEpicModule::init(const char* dkey, const char* appid) {
 	devkey = dkey;
 	appID = appid;
 }
 
-void CAppsflyerEpicModule::start(bool skipFirst = false)
-{
+void CAppsflyerEpicModule::start(bool skipFirst) {
 	AppsflyerModule afc(devkey, appID);
 
 	RequestData req = buildRequestData();
@@ -41,8 +39,7 @@ void CAppsflyerEpicModule::start(bool skipFirst = false)
 	SendHTTPReq(reqH, FIRST_OPEN_REQUEST);
 }
 
-void CAppsflyerEpicModule::logEvent(std::string event_name, std::string event_values)
-{
+void CAppsflyerEpicModule::logEvent(std::string event_name, std::string event_values) {
 	AppsflyerModule afc(devkey, appID);
 
 	RequestData req = buildRequestData();
@@ -53,6 +50,7 @@ void CAppsflyerEpicModule::logEvent(std::string event_name, std::string event_va
 	FHttpRequestRef reqH = afc.af_inappEvent(req);
 	SendHTTPReq(reqH, INAPP_EVENT_REQUEST);
 }
+
 
 RequestData CAppsflyerEpicModule::buildRequestData()
 {
@@ -71,7 +69,7 @@ RequestData CAppsflyerEpicModule::buildRequestData()
 	req.timestamp = timestamp;
 	req.device_os_version = "1.0.0";
 	req.app_version = app_version;
-	req.device_model = afc.get_OS(); // TODO: check how to retreive device model.
+	req.device_model = afc.get_OS(); //TODO: check how to retreive device model.
 	req.limit_ad_tracking = "false";
 	req.request_id = afc.uuid_gen().c_str();
 
@@ -84,11 +82,9 @@ RequestData CAppsflyerEpicModule::buildRequestData()
 	return req;
 }
 
-void CAppsflyerEpicModule::SendHTTPReq(FHttpRequestRef pRequest, uint64 contextId)
-{
+void CAppsflyerEpicModule::SendHTTPReq(FHttpRequestRef pRequest, uint64 contextId) {
 	UE_LOG(LogTemp, Warning, TEXT("context is: %i"), contextId);
-	if (contextId == FIRST_OPEN_REQUEST || contextId == SESSION_REQUEST)
-	{
+	if (contextId == FIRST_OPEN_REQUEST || contextId == SESSION_REQUEST) {
 		// Set the callback, which will execute when the HTTP call is complete
 		pRequest->OnProcessRequestComplete().BindLambda(
 			// Here, we "capture" the 'this' pointer (the "&"), so our lambda can call this
@@ -96,38 +92,36 @@ void CAppsflyerEpicModule::SendHTTPReq(FHttpRequestRef pRequest, uint64 contextI
 			[&](
 				FHttpRequestPtr pRequest,
 				FHttpResponsePtr pResponse,
-				bool connectedSuccessfully) mutable
-			{
-				if (connectedSuccessfully)
-				{
-					// We should have a JSON response - attempt to process it.
-					AppsflyerModule afc(devkey, appID);
-					UE_LOG(LogTemp, Warning, TEXT("HTTP ResponseCode: %i"), pResponse->GetResponseCode());
+				bool connectedSuccessfully) mutable {
+					if (connectedSuccessfully) {
+						// We should have a JSON response - attempt to process it.
+						AppsflyerModule afc(devkey, appID);
+						UE_LOG(LogTemp, Warning, TEXT("HTTP ResponseCode: %i"), pResponse->GetResponseCode());
+						if (contextId == FIRST_OPEN_REQUEST) {
+							UE_LOG(LogTemp, Warning, TEXT("FIRST_OPEN_REQUEST event"));
+						}
+						else {
+							UE_LOG(LogTemp, Warning, TEXT("SESSION_REQUEST event"));
+						}
 
-					if (pResponse->GetResponseCode() == EHttpResponseCodes::Ok || pResponse->GetResponseCode() == EHttpResponseCodes::Accepted)
-					{
-						afc.increase_AF_counter();
-						UE_LOG(LogTemp, Warning, TEXT("AF counter increase"));
+						if (pResponse->GetResponseCode() == EHttpResponseCodes::Ok || pResponse->GetResponseCode() == EHttpResponseCodes::Accepted) {
+							afc.increase_AF_counter();
+							UE_LOG(LogTemp, Warning, TEXT("AF counter increase"));
+						} else {
+							UE_LOG(LogTemp, Warning, TEXT("HTTP error: %i"), pResponse->GetResponseCode());
+						}
 					}
-					else
-					{
-						UE_LOG(LogTemp, Warning, TEXT("HTTP error: %i"), pResponse->GetResponseCode());
+					else {
+						switch (pRequest->GetStatus()) {
+						case EHttpRequestStatus::Failed_ConnectionError:
+							UE_LOG(LogTemp, Error, TEXT("Connection failed."));
+						default:
+							UE_LOG(LogTemp, Error, TEXT("Request failed."));
+						}
 					}
-				}
-				else
-				{
-					switch (pRequest->GetStatus())
-					{
-					case EHttpRequestStatus::Failed_ConnectionError:
-						UE_LOG(LogTemp, Error, TEXT("Connection failed."));
-					default:
-						UE_LOG(LogTemp, Error, TEXT("Request failed."));
-					}
-				}
 			});
 	}
-	else if (contextId == INAPP_EVENT_REQUEST)
-	{
+	else if (contextId == INAPP_EVENT_REQUEST) {
 		// Set the callback, which will execute when the HTTP call is complete
 		pRequest->OnProcessRequestComplete().BindLambda(
 			// Here, we "capture" the 'this' pointer (the "&"), so our lambda can call this
@@ -135,25 +129,21 @@ void CAppsflyerEpicModule::SendHTTPReq(FHttpRequestRef pRequest, uint64 contextI
 			[&](
 				FHttpRequestPtr pRequest,
 				FHttpResponsePtr pResponse,
-				bool connectedSuccessfully) mutable
-			{
-				if (connectedSuccessfully)
-				{
-					// We should have a JSON response - attempt to process it.
-					AppsflyerModule afc(devkey, appID);
-					UE_LOG(LogTemp, Warning, TEXT("HTTP ResponseCode: %i"), pResponse->GetResponseCode());
-					UE_LOG(LogTemp, Warning, TEXT("inapp event"));
-				}
-				else
-				{
-					switch (pRequest->GetStatus())
-					{
-					case EHttpRequestStatus::Failed_ConnectionError:
-						UE_LOG(LogTemp, Error, TEXT("Connection failed."));
-					default:
-						UE_LOG(LogTemp, Error, TEXT("Request failed."));
+				bool connectedSuccessfully) mutable {
+					if (connectedSuccessfully) {
+						// We should have a JSON response - attempt to process it.
+						AppsflyerModule afc(devkey, appID);
+						UE_LOG(LogTemp, Warning, TEXT("HTTP ResponseCode: %i"), pResponse->GetResponseCode());
+						UE_LOG(LogTemp, Warning, TEXT("INAPP_EVENT_REQUEST event"));
 					}
-				}
+					else {
+						switch (pRequest->GetStatus()) {
+						case EHttpRequestStatus::Failed_ConnectionError:
+							UE_LOG(LogTemp, Error, TEXT("Connection failed."));
+						default:
+							UE_LOG(LogTemp, Error, TEXT("Request failed."));
+						}
+					}
 			});
 	}
 
