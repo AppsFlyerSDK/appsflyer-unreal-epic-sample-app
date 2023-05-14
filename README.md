@@ -120,7 +120,7 @@ bMirrorPresenceToEAS=False
 ```
 
 3. In your Unreal editor, go to **Plugins**, activate **Online Subsystem Steam**, and then restart the editor.
-4. Open the project in your preferred C++ editor and in the `[YOUR-APP-NAME].Build.cs` file, add `OpenSSL`, `OnlineSubsystem`, and `OnlineSubsystemEOS` to your dependencies and `HTTP` as a private dependencies:
+4. Open the project in your preferred C++ editor and in the `[YOUR-APP-NAME].Build.cs` file, add `OpenSSL`, `OnlineSubsystem`, and `OnlineSubsystemEOS` to your dependencies and `HTTP` as a private dependency:
 
 ```
 PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "HeadMountedDisplay", "OpenSSL", "OnlineSubsystem", "OnlineSubsystemEOS" });
