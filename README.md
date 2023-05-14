@@ -120,10 +120,11 @@ bMirrorPresenceToEAS=False
 ```
 
 3. In your Unreal editor, go to **Plugins**, activate **Online Subsystem Steam**, and then restart the editor.
-4. Open the project in your preferred C++ editor and in the `[YOUR-APP-NAME].Build.cs` file, add `OpenSSL`, `OnlineSubsystem`, and `OnlineSubsystemEOS` to your dependencies:
+4. Open the project in your preferred C++ editor and in the `[YOUR-APP-NAME].Build.cs` file, add `OpenSSL`, `OnlineSubsystem`, and `OnlineSubsystemEOS` to your dependencies and `HTTP` as a private dependencies:
 
 ```
 PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "HeadMountedDisplay", "OpenSSL", "OnlineSubsystem", "OnlineSubsystemEOS" });
+PrivateDependencyModuleNames.Add("HTTP");
 ```
 
 5. In your Unreal Project files, under the **Source** directory, create a new directory named **AppsflyerSteamModule**.
