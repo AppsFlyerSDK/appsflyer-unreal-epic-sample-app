@@ -27,9 +27,15 @@ We recommend you use this sample app as a reference for integrating the AppsFlye
 
 `AppsflyerEpicModule.h`, included in the `appsflyer-unreal-epic-sample-app/AppsflyerEpicIntegrationFiles/AppsflyerEpicModule` folder, contains the required code and logic to connect to AppsFlyer servers and report events.
 
-### `void init(const char* devkey, const char* appID)`
+### Init
 
 This method receives your API key and app ID and initializes the AppsFlyer Module.
+
+**Method signature**
+
+```
+void init(const char* devkey, const char* appID)
+```
 
 **Usage**:
 
@@ -42,9 +48,15 @@ AppsflyerEpicModule()->init("DEV_KEY", "STEAM_APP_ID");
 - `STEAM_APP_ID`: Found in the [SteamDB](https://steamdb.info/apps/).
 - `DEV_KEY`: Get from the marketer or [AppsFlyer HQ](https://support.appsflyer.com/hc/en-us/articles/211719806-App-settings-#general-app-settings).
 
-### `void start(bool skipFirst = false)`
+### Start
 
-This method sends first open and /session requests to AppsFlyer.
+This method sends first open/session requests to AppsFlyer.
+
+**Method signature**
+
+```
+void start(bool skipFirst = false)
+```
 
 **Usage**:
 
@@ -57,9 +69,15 @@ bool skipFirst = [SOME_CONDITION];
 AppsflyerEpicModule()->start(skipFirst);
 ```
 
-### `void **logEvent**(std::string **event_name**, json **event_values**)`
+### LogEvent
 
 This method receives an event name and JSON object and sends in-app events to AppsFlyer.
+
+**Method signature**
+
+```
+void logEvent(std::string event_name, json event_values)
+```
 
 **Usage**:
 
