@@ -9,7 +9,7 @@ slug: unreal-epic
 > Link to repository  
 > [GitHub](https://github.com/AppsFlyerSDK/appsflyer-unreal-epic-sample-app)
 
-# AppsFlyer Unreal Epic SDK integration
+## AppsFlyer Unreal Epic SDK integration
 
 AppsFlyer empowers gaming marketers to make better decisions by providing powerful tools to perform cross-platform attribution.
 
