@@ -51,6 +51,11 @@ void CAppsflyerEpicModule::logEvent(std::string event_name, std::string event_va
 	SendHTTPReq(reqH, INAPP_EVENT_REQUEST);
 }
 
+std::string CAppsflyerEpicModule::getAppsFlyerUID()
+{
+    AppsflyerModule afc(devkey, appID);
+	return afc.get_AF_id();
+}
 
 RequestData CAppsflyerEpicModule::buildRequestData()
 {

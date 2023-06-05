@@ -1,5 +1,7 @@
 #pragma once
 #include "RequestData.h"
+#include <iostream>
+#include <string>
 
 #define UI UI_ST
 //THIRD_PARTY_INCLUDES_START
@@ -18,10 +20,12 @@ public:
 	// This method receives your api key and app id,
 	// and initializes the AppsFlyer Connector 
 	void init(const char* devkey, const char* appID);
-	// sends “first open/session” request to AppsFlyer.
+	// sends ï¿½first open/sessionï¿½ request to AppsFlyer.
 	void start(bool skipFirst = false);
 	// This method receives an event name and json object and sends an in-app event to AppsFlyer.
 	void logEvent(std::string event_name, std::string event_values);
+	// get AppsFlyer's unique device ID. 
+	std::string getAppsFlyerUID();
 private:
 	const char* devkey;
 	const char* appID;
