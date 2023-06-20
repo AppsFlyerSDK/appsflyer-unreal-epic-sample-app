@@ -190,6 +190,10 @@ public:
 
 ```c++
 #include "AppsflyerEpicModule/AppsflyerEpicModule.cpp"
+#include <ThirdParty/EOSSDK/SDK/Include/eos_init.h>
+#include <ThirdParty/EOSSDK/SDK/Include/eos_sdk.h>
+#include <EOSSDK/SDK/Include/eos_userinfo.h>
+using Super = AGameModeBase;
 ```
 
 10. Add the following function, making sure to replace `DEV_KEY` and `EPIC_APP_ID` in the [`init`](#init) function with your [app details](#app-details) and initialize the EOS SDK with your EOS details.

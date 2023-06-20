@@ -14,6 +14,8 @@
 #include "HttpModule.h"
 #include "Interfaces/IHttpRequest.h"
 #include "Interfaces/IHttpResponse.h"
+#include <HAL/FileManagerGeneric.h>
+#include "Misc/Paths.h"
 
 using namespace std;
 
@@ -188,6 +190,66 @@ public:
 		}
 		return res;
 	}
+
+	bool isInstallOlderThanDate(string date) {
+		bool isInstallOlder = false;
+
+		FPaths fp = FPaths();
+		FString folderPath = fp.GameSourceDir();
+
+		UE_LOG(LogTemp, Warning, TEXT("AF GUID: %s"), *folderPath);
+
+		FString RelativePath = FPaths::GameSourceDir();
+
+		UE_LOG(LogTemp, Warning, TEXT("RelativePath: %s"), *RelativePath);
+
+		FString CollapsedPath(RelativePath);
+		bool bCollapseSuccess = FPaths::CollapseRelativeDirectories(CollapsedPath);
+		FString CollapsedSuccess = bCollapseSuccess ? FString(TEXT("TRUE")) : FString(TEXT("FALSE"));
+		UE_LOG(LogTemp, Warning, TEXT("CollapsedPath: %s"), *CollapsedPath);
+		UE_LOG(LogTemp, Warning, TEXT("CollapsedSuccess: %s"), *CollapsedSuccess);
+
+		FString AbsolutePath(FPaths::ConvertRelativePathToFull(CollapsedPath));
+		UE_LOG(LogTemp, Warning, TEXT("AbsolutePath: %s"), *AbsolutePath);
+
+		const char* folderPathCh = StringCast<ANSICHAR>(*AbsolutePath).Get();
+
+		FFileManagerGeneric fm;
+		const TCHAR* Filepath = *AbsolutePath;
+
+		FDateTime fileDateTime = fm.GetTimeStamp(Filepath);
+
+		FString datetime = fileDateTime.ToString();
+		UE_LOG(LogTemp, Warning, TEXT("datetime: %s"), *datetime);
+
+		struct stat attrib;         // create a file attribute structure
+
+		stat(folderPathCh, &attrib);     // get the attributes of afile.txt
+
+		__time64_t fmod_time = attrib.st_mtime;
+		auto ffolder_time = ctime(&fmod_time);
+
+
+		UE_LOG(LogTemp, Warning, TEXT("STAT: before %s"), ffolder_time);
+		
+		struct stat result;
+		if (stat(folderPathCh, &result) == 0)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("STAT: in"));
+
+			//__time64_t excludeInstallDateBefore = "";
+			__time64_t mod_time = result.st_mtime;
+			auto folder_time = ctime(&mod_time);
+			std::time_t excludeInstallDateBefore = to_time_t(date);
+			double diff = difftime(mod_time, excludeInstallDateBefore);
+
+			isInstallOlder = diff < 0;
+
+			auto time = ctime(&mod_time);
+		}
+
+		return isInstallOlder;
+	}
 private:
 	std::string _appid;
 
@@ -196,6 +258,15 @@ private:
 
 	std::string af_counter;
 	std::string af_guid;
+
+	std::time_t to_time_t(const std::string& str, bool is_dst = false, const std::string& format = "%Y-%b-%d %H:%M:%S")
+	{
+		std::tm t = { 0 };
+		t.tm_isdst = is_dst ? 1 : 0;
+		std::istringstream ss(str);
+		ss >> std::get_time(&t, format.c_str());
+		return mktime(&t);
+	}
 
 	// get the AF app open counter from registry
 	int get_AF_counter() {
