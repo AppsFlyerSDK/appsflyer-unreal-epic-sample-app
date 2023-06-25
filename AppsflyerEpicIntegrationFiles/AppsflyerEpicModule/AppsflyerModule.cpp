@@ -194,57 +194,25 @@ public:
 	bool isInstallOlderThanDate(string date) {
 		bool isInstallOlder = false;
 
-		FPaths fp = FPaths();
-		FString folderPath = fp.GameSourceDir();
+		//FString RelativePath = FPaths::GameSourceDir();
+		//FString CollapsedPath(RelativePath);
+		//bool bCollapseSuccess = FPaths::CollapseRelativeDirectories(CollapsedPath);
+		//FString AbsolutePath(FPaths::ConvertRelativePathToFull(CollapsedPath));
+		//UE_LOG(LogTemp, Warning, TEXT("AbsolutePath: %s"), *AbsolutePath);
+		//const char* folderPathCh = StringCast<ANSICHAR>(*AbsolutePath).Get();
 
-		UE_LOG(LogTemp, Warning, TEXT("AF GUID: %s"), *folderPath);
-
-		FString RelativePath = FPaths::GameSourceDir();
-
-		UE_LOG(LogTemp, Warning, TEXT("RelativePath: %s"), *RelativePath);
-
-		FString CollapsedPath(RelativePath);
-		bool bCollapseSuccess = FPaths::CollapseRelativeDirectories(CollapsedPath);
-		FString CollapsedSuccess = bCollapseSuccess ? FString(TEXT("TRUE")) : FString(TEXT("FALSE"));
-		UE_LOG(LogTemp, Warning, TEXT("CollapsedPath: %s"), *CollapsedPath);
-		UE_LOG(LogTemp, Warning, TEXT("CollapsedSuccess: %s"), *CollapsedSuccess);
-
-		FString AbsolutePath(FPaths::ConvertRelativePathToFull(CollapsedPath));
-		UE_LOG(LogTemp, Warning, TEXT("AbsolutePath: %s"), *AbsolutePath);
-
-		const char* folderPathCh = StringCast<ANSICHAR>(*AbsolutePath).Get();
-
-		FFileManagerGeneric fm;
-		const TCHAR* Filepath = *AbsolutePath;
-
-		FDateTime fileDateTime = fm.GetTimeStamp(Filepath);
-
-		FString datetime = fileDateTime.ToString();
-		UE_LOG(LogTemp, Warning, TEXT("datetime: %s"), *datetime);
-
-		struct stat attrib;         // create a file attribute structure
-
-		stat(folderPathCh, &attrib);     // get the attributes of afile.txt
-
-		__time64_t fmod_time = attrib.st_mtime;
-		auto ffolder_time = ctime(&fmod_time);
-
-
-		UE_LOG(LogTemp, Warning, TEXT("STAT: before %s"), ffolder_time);
+		FString launchDir = FPaths::LaunchDir();
+		UE_LOG(LogTemp, Warning, TEXT("launchDir: %s"), *launchDir);
+		const char* folderPathCh = StringCast<ANSICHAR>(*launchDir).Get();
 		
 		struct stat result;
 		if (stat(folderPathCh, &result) == 0)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("STAT: in"));
-
-			//__time64_t excludeInstallDateBefore = "";
 			__time64_t mod_time = result.st_mtime;
 			auto folder_time = ctime(&mod_time);
 			std::time_t excludeInstallDateBefore = to_time_t(date);
 			double diff = difftime(mod_time, excludeInstallDateBefore);
-
 			isInstallOlder = diff < 0;
-
 			auto time = ctime(&mod_time);
 		}
 
