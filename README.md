@@ -34,13 +34,13 @@ This method receives your API key and app ID and initializes the AppsFlyer Modul
 **Method signature**
 
 ```c++
-void init(const char* devkey, const char* appID)
+void Init(const char* devkey, const char* appID)
 ```
 
 **Usage**:
 
 ```c++
-AppsflyerEpicModule()->init("DEV_KEY", "EPIC_APP_ID");
+AppsflyerEpicModule()->Init("DEV_KEY", "EPIC_APP_ID");
 ```
 
 <span id="app-details">**Arguments**:</span>
@@ -55,18 +55,18 @@ This method sends first open/session requests to AppsFlyer.
 **Method signature**
 
 ```c++
-void start(bool skipFirst = false)
+void Start(bool skipFirst = false)
 ```
 
 **Usage**:
 
 ```c++
 // without the flag
-AppsflyerEpicModule()->start();
+AppsflyerEpicModule()->Start();
 
 // with the flag
 bool skipFirst = [SOME_CONDITION];
-AppsflyerEpicModule()->start(skipFirst);
+AppsflyerEpicModule()->Start(skipFirst);
 ```
 
 ### LogEvent
@@ -76,7 +76,7 @@ This method receives an event name and JSON object and sends in-app events to Ap
 **Method signature**
 
 ```c++
-void logEvent(std::string event_name, json event_values)
+void LogEvent(std::string event_name, json event_parameters)
 ```
 
 **Usage**:
@@ -85,8 +85,8 @@ void logEvent(std::string event_name, json event_values)
 //set event name
 std::string event_name = "af_purchase";
 //set json string
-std::string event_values = "{\"af_currency\":\"USD\",\"af_price\":6.66,\"af_revenue\":24.12}";
-AppsflyerEpicModule()->logEvent(event_name, event_values);
+std::string event_parameters = "{\"af_currency\":\"USD\",\"af_price\":6.66,\"af_revenue\":24.12}";
+AppsflyerEpicModule()->LogEvent(event_name, event_parameters);
 ```
 
 ### GetAppsFlyerUID
@@ -96,13 +96,13 @@ Get AppsFlyer's unique device ID. The SDK generates an AppsFlyer unique device I
 **Method signature**
 
 ```c++
-std::string getAppsFlyerUID()
+std::string GetAppsFlyerUID()
 ```
 
 **Usage**:
 
 ```c++
-AppsflyerEpicModule()->getAppsFlyerUID();
+AppsflyerEpicModule()->GetAppsFlyerUID();
 ```
 
 ### IsInstallOlderThanDate
@@ -112,7 +112,7 @@ This method receives a date string and returns true if the game folder modificat
 **Method signature**
 
 ```c++
-bool isInstallOlderThanDate(std::string datestring)
+bool IsInstallOlderThanDate(std::string datestring)
 ```
 
 **Usage**:
@@ -121,10 +121,10 @@ bool isInstallOlderThanDate(std::string datestring)
 // the modification date in this example is "2023-January-23 08:30:00"
 
 // will return false
-bool dateBefore = AppsflyerSteamModule()->isInstallOlderThanDate("2023-January-01 23:12:34");
+bool dateBefore = AppsflyerSteamModule()->IsInstallOlderThanDate("2023-January-01 23:12:34");
 
 // will return true
-bool dateAfter = AppsflyerSteamModule()->isInstallOlderThanDate("2023-April-10 23:12:34");
+bool dateAfter = AppsflyerSteamModule()->IsInstallOlderThanDate("2023-April-10 23:12:34");
 ```
 
 ## Running the sample app
@@ -255,16 +255,16 @@ void AEpicTestGameMode::StartPlay()
   EOS_HPlatform platform = EOS_Platform_Create(&PlatformOptions);
 
   // af module init
-  AppsflyerEpicModule()->init("DEV_KEY", "APP_ID");
+  AppsflyerEpicModule()->Init("DEV_KEY", "APP_ID");
   // af send firstopen/session
-  AppsflyerEpicModule()->start();
+  AppsflyerEpicModule()->Start();
 
   //set event name
   std::string event_name = "af_purchase";
   //set json string
-  std::string event_values = "{\"af_currency\":\"USD\",\"af_price\":6.66,\"af_revenue\":24.12}";
+  std::string event_parameters = "{\"af_currency\":\"USD\",\"af_price\":6.66,\"af_revenue\":24.12}";
   // af send inapp event
-  AppsflyerEpicModule()->logEvent(event_name, event_values);
+  AppsflyerEpicModule()->LogEvent(event_name, event_parameters);
  }
  else {
   UE_LOG(LogTemp, Warning, TEXT("EOS FAIL"));

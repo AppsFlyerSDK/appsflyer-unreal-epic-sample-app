@@ -25,13 +25,13 @@ CAppsflyerEpicModule::CAppsflyerEpicModule()
 {
 }
 
-void CAppsflyerEpicModule::init(const char *dkey, const char *appid)
+void CAppsflyerEpicModule::Init(const char *dkey, const char *appid)
 {
 	devkey = dkey;
 	appID = appid;
 }
 
-void CAppsflyerEpicModule::start(bool skipFirst)
+void CAppsflyerEpicModule::Start(bool skipFirst)
 {
 	AppsflyerModule afc(devkey, appID);
 
@@ -41,26 +41,26 @@ void CAppsflyerEpicModule::start(bool skipFirst)
 	SendHTTPReq(reqH, FIRST_OPEN_REQUEST);
 }
 
-void CAppsflyerEpicModule::logEvent(std::string event_name, std::string event_values)
+void CAppsflyerEpicModule::LogEvent(std::string event_name, std::string event_parameters)
 {
 	AppsflyerModule afc(devkey, appID);
 
 	RequestData req = buildRequestData();
 
 	req.event_name = event_name;
-	req.event_values = event_values;
+	req.event_parameters = event_parameters;
 
 	FHttpRequestRef reqH = afc.af_inappEvent(req);
 	SendHTTPReq(reqH, INAPP_EVENT_REQUEST);
 }
 
-std::string CAppsflyerEpicModule::getAppsFlyerUID()
+std::string CAppsflyerEpicModule::GetAppsFlyerUID()
 {
 	AppsflyerModule afc(devkey, appID);
 	return afc.get_AF_id();
 }
 
-bool CAppsflyerEpicModule::isInstallOlderThanDate(std::string datestring)
+bool CAppsflyerEpicModule::IsInstallOlderThanDate(std::string datestring)
 {
 	AppsflyerModule afc(devkey, appID);
 	return afc.isInstallOlderThanDate(datestring);
