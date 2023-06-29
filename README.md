@@ -274,3 +274,9 @@ void AEpicTestGameMode::StartPlay()
 ```
 
 11. Report [in-app events](#logevent)
+
+## Resetting the attribtion
+
+Delete the `appsflyer_info` file:
+
+![Delete the](https://files.readme.io/d43d8ce-image.png)
