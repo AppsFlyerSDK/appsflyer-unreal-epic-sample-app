@@ -126,9 +126,10 @@ bool dateBefore = AppsflyerEpicModule()->IsInstallOlderThanDate("2023-January-01
 // will return true
 bool dateAfter = AppsflyerEpicModule()->IsInstallOlderThanDate("2023-April-10 23:12:34");
 
-// example usage with skipFirst:
-bool isInstallOlderThanDate = AppsflyerEpicModule()->IsInstallOlderThanDate("2023-April-10 23:12:34");
-AppsflyerEpicModule()->Start(isInstallOlderThanDate);
+// example usage with skipFirst -
+// skipping if the install date is NOT older than the given date
+bool isInstallOlderThanDate = AppsflyerEpicModule()->IsInstallOlderThanDate("2023-January-10 23:12:34");
+AppsflyerEpicModule()->Start(!isInstallOlderThanDate);
 ```
 
 ## Running the sample app
