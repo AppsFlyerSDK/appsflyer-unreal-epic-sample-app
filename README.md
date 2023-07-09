@@ -125,6 +125,10 @@ bool dateBefore = AppsflyerSteamModule()->IsInstallOlderThanDate("2023-January-0
 
 // will return true
 bool dateAfter = AppsflyerSteamModule()->IsInstallOlderThanDate("2023-April-10 23:12:34");
+
+// example usage with skipFirst:
+bool isInstallOlderThanDate = AppsflyerSteamModule()->IsInstallOlderThanDate("2023-April-10 23:12:34");
+AppsflyerSteamModule()->Start(isInstallOlderThanDate);
 ```
 
 ## Running the sample app
