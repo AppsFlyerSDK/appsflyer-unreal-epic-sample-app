@@ -40,7 +40,7 @@ void Init(const char* devkey, const char* appID)
 **Usage**:
 
 ```c++
-AppsflyerEpicModule()->Init("DEV_KEY", "EPIC_APP_ID");
+AppsflyerEpicModule()->Init(<< DEV_KEY >>, << EPIC_APP_ID >>);
 ```
 
 <span id="app-details">**Arguments**:</span>
@@ -255,7 +255,7 @@ void AEpicTestGameMode::StartPlay()
   EOS_HPlatform platform = EOS_Platform_Create(&PlatformOptions);
 
   // af module init
-  AppsflyerEpicModule()->Init("DEV_KEY", "APP_ID");
+  AppsflyerEpicModule()->Init(<< DEV_KEY >>, << EPIC_APP_ID >>);
   // af send firstopen/session
   AppsflyerEpicModule()->Start();
 
