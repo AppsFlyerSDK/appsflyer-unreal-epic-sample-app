@@ -29,10 +29,13 @@ void CAppsflyerEpicModule::Init(const char *dkey, const char *appid)
 {
 	devkey = dkey;
 	appID = appid;
+	isStopped = true;
 }
 
 void CAppsflyerEpicModule::Start(bool skipFirst)
 {
+	isStopped = false;
+
 	AppsflyerModule afc(devkey, appID);
 
 	RequestData req = buildRequestData();
@@ -41,8 +44,17 @@ void CAppsflyerEpicModule::Start(bool skipFirst)
 	SendHTTPReq(reqH, FIRST_OPEN_REQUEST);
 }
 
+void CAppsflyerEpicModule::Stop()
+{
+	isStopped = true;
+}
+
 void CAppsflyerEpicModule::LogEvent(std::string event_name, std::string event_parameters)
 {
+	if (isStopped) {
+		return;
+	}
+
 	AppsflyerModule afc(devkey, appID);
 
 	RequestData req = buildRequestData();
@@ -58,6 +70,16 @@ std::string CAppsflyerEpicModule::GetAppsFlyerUID()
 {
 	AppsflyerModule afc(devkey, appID);
 	return afc.get_AF_id();
+}
+
+void CAppsflyerEpicModule::SetCustomerUserId(std::string customerUserID)
+{
+	if (!isStopped) {
+		// Cannot set CustomerUserID while the SDK has started.
+		return;
+	}
+	// Customer User ID has been set
+	cuid = customerUserID;
 }
 
 bool CAppsflyerEpicModule::IsInstallOlderThanDate(std::string datestring)
@@ -93,10 +115,14 @@ RequestData CAppsflyerEpicModule::buildRequestData()
 	af_id.value = afc.get_AF_id().c_str();
 	req.device_ids.insert(req.device_ids.end(), af_id);
 
+	if (!cuid.empty()) {
+		req.customer_user_id = cuid;
+	}
+
 	return req;
 }
 
-void CAppsflyerEpicModule::SendHTTPReq(FHttpRequestRef pRequest, uint64 contextId)
+void CAppsflyerEpicModule::SendHTTPReq(FHttpRequestRef pRequest, int64 contextId)
 {
 	UE_LOG(LogTemp, Warning, TEXT("context is: %i"), contextId);
 	if (contextId == FIRST_OPEN_REQUEST || contextId == SESSION_REQUEST)

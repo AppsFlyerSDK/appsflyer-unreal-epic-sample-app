@@ -20,21 +20,25 @@ public:
 	// This method receives your api key and app id,
 	// and initializes the AppsFlyer Connector
 	void Init(const char *devkey, const char *appID);
-	// Sends "first open/session" request to AppsFlyer.
+	// sends "first open/session" request to AppsFlyer.
 	void Start(bool skipFirst = false);
+	void Stop();
 	// This method receives an event name and json object and sends an in-app event to AppsFlyer.
 	void LogEvent(std::string event_name, std::string event_parameters);
-	// Get AppsFlyer's unique device ID.
+	// get AppsFlyer's unique device ID.
 	std::string GetAppsFlyerUID();
+	void SetCustomerUserId(std::string customerUserID);
 	// This method receives a date string and returns true if the game folder modification date is older than the date string.
 	bool IsInstallOlderThanDate(std::string datestring);
 
 private:
 	const char *devkey;
 	const char *appID;
+	bool isStopped;
+	std::string cuid;
 	friend CAppsflyerEpicModule *AppsflyerEpicModule();
 	CAppsflyerEpicModule();
-	void SendHTTPReq(FHttpRequestRef pRequest, uint64 context);
+	void SendHTTPReq(FHttpRequestRef pRequest, int64 context);
 	RequestData buildRequestData();
 };
 
