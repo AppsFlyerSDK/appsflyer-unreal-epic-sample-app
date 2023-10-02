@@ -86,10 +86,10 @@ void Stop()
 
 ```c++
 // Starting the SDK
-AppsflyerPCModule()->Start();
+AppsflyerEpicModule()->Start();
 // ...
 // Stopping the SDK, preventing further communication with AppsFlyer
-AppsflyerPCModule()->Stop();
+AppsflyerEpicModule()->Stop();
 ```
 
 ### LogEvent
@@ -143,9 +143,9 @@ void SetCustomerUserId(std::string cuid)
 **Usage**:
 
 ```c++
-AppsflyerPCModule()->Init(DEV_KEY, APP_ID);
-AppsflyerPCModule()->SetCustomerUserId("Test-18-9-23");
-AppsflyerPCModule()->Start();
+AppsflyerEpicModule()->Init(DEV_KEY, APP_ID);
+AppsflyerEpicModule()->SetCustomerUserId("Test-18-9-23");
+AppsflyerEpicModule()->Start();
 ```
 
 
