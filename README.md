@@ -38,16 +38,16 @@ This method receives your API key and app ID and initializes the AppsFlyer Modul
 void Init(const char* devkey, const char* appID)
 ```
 
+<span id="app-details">**Arguments**:</span>
+
+- `EPIC_APP_ID`: Your Epic app id.
+- `DEV_KEY`: Get from the marketer or [AppsFlyer HQ](https://support.appsflyer.com/hc/en-us/articles/211719806-App-settings-#general-app-settings).
+
 **Usage**:
 
 ```c++
 AppsflyerEpicModule()->Init(<< DEV_KEY >>, << EPIC_APP_ID >>);
 ```
-
-<span id="app-details">**Arguments**:</span>
-
-- `EPIC_APP_ID`: Your Epic app id.
-- `DEV_KEY`: Get from the marketer or [AppsFlyer HQ](https://support.appsflyer.com/hc/en-us/articles/211719806-App-settings-#general-app-settings).
 
 ### Start
 
@@ -98,17 +98,30 @@ This method receives an event name and JSON object and sends in-app events to Ap
 **Method signature**
 
 ```c++
-void LogEvent(std::string event_name, json event_parameters)
+void LogEvent(std::string event_name, std::string event_values, std::string custom_event_values = "")
 ```
+
+**Arguments**
+
+- `std::string event_name`-
+- `std::string event_parameters`: dictionary object which contains the [predefined event parameters](https://dev.appsflyer.com/hc/docs/ctv-log-event-event-parameters).
+- `std::string event_custom_parameters` (non-mandatory): dictionary object which contains the any custom event parameters. For non-English values, please use [UTF-8 encoding](#to_utf8).
 
 **Usage**:
 
 ```c++
-//set event name
+// Setting the event parameters json string and event name
 std::string event_name = "af_purchase";
-//set json string
 std::string event_parameters = "{\"af_currency\":\"USD\",\"af_price\":6.66,\"af_revenue\":24.12}";
+// Send the InApp event request
 AppsflyerEpicModule()->LogEvent(event_name, event_parameters);
+
+// Set non-English values for testing UTF-8 support
+std::wstring ws = L"車B1234 こんにちは";
+std::wstring ws2 = L"新人邀约购物日";
+std::string event_custom_parameters = "{\"goodsName\":\"" + AppsflyerEpicModule()->to_utf8(ws) + "\",\"goodsName2\":\"" + AppsflyerEpicModule()->to_utf8(ws2) + "\"}";
+// Send inapp event with custom params
+AppsflyerEpicModule()->LogEvent(event_name, event_parameters, event_custom_parameters);
 ```
 
 ### GetAppsFlyerUID
@@ -146,6 +159,22 @@ AppsflyerEpicModule()->SetCustomerUserId("Test-18-9-23");
 AppsflyerEpicModule()->Start();
 ```
 
+### To_utf8
+
+This method receives a reference of a `std::wstring` and returns UTF-8 encoded `std::string`
+
+**Method signature**
+
+```c++
+std::string to_utf8(std::wstring& wide_string);
+```
+**Usage**:
+```c++
+// Set non-English values for testing UTF-8 support
+std::wstring ws = L"車B1234 こんにちは";
+std::wstring ws2 = L"新人邀约购物日";
+std::string event_custom_parameters = "{\"goodsName\":\"" + AppsflyerEpicModule()->to_utf8(ws) + "\",\"goodsName2\":\"" + AppsflyerEpicModule()->to_utf8(ws2) + "\"}";
+```
 
 ### IsInstallOlderThanDate
 
@@ -300,18 +329,29 @@ void AEpicTestGameMode::StartPlay()
   PlatformOptions.DeploymentId = "DEPLOYMENT_ID";
   PlatformOptions.EncryptionKey = "ENCRYPTION_KEY";
   EOS_HPlatform platform = EOS_Platform_Create(&PlatformOptions);
+   
+	// af module init
+	AppsflyerEpicModule()->Init(<< DevKey >>, << AppID >>);
 
-  // af module init
-  AppsflyerEpicModule()->Init(<< DEV_KEY >>, << EPIC_APP_ID >>);
   // af send firstopen/session
-  AppsflyerEpicModule()->Start();
+   AppsflyerEpicModule()->Start();
 
-  //set event name
-  std::string event_name = "af_purchase";
-  //set json string
-  std::string event_parameters = "{\"af_currency\":\"USD\",\"af_price\":6.66,\"af_revenue\":24.12}";
-  // af send inapp event
-  AppsflyerEpicModule()->LogEvent(event_name, event_parameters);
+   // set event name
+   std::string event_name = "af_purchase";
+   // set json string
+   std::string event_parameters = "{\"af_currency\":\"USD\",\"af_price\":6.66,\"af_revenue\":24.12}";
+   // af send inapp event
+   AppsflyerEpicModule()->LogEvent(event_name, event_parameters);
+
+   // set non-English values for testing UTF-8 support 
+   std::wstring ws = L"車B1234 こんにちは";
+   std::wstring ws2 = L"新人邀约购物日";
+   std::string event_custom_parameters = "{\"goodsName\":\"" + AppsflyerEpicModule()->to_utf8(ws) + "\",\"goodsName2\":\"" + AppsflyerEpicModule()->to_utf8(ws2) + "\"}";
+   // af send inapp event with custom params
+   AppsflyerEpicModule()->LogEvent(event_name, event_parameters, event_custom_parameters);
+
+   // stop the SDK
+   AppsflyerEpicModule()->Stop();
  }
  else {
   UE_LOG(LogTemp, Warning, TEXT("EOS FAIL"));
