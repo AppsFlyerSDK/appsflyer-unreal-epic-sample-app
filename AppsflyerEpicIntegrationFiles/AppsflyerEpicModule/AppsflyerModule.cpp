@@ -49,7 +49,7 @@ public:
 		std::string json_data_str = ss.str();
 
 		FHttpModule &httpModule = FHttpModule::Get();
-		TSharedRef<IHttpRequest, ESPMode::ThreadSafe> pRequest = httpModule.CreateRequest();
+		auto pRequest = httpModule.CreateRequest();
 
 		FString urlFString(url.c_str());
 		pRequest->SetURL(urlFString);
