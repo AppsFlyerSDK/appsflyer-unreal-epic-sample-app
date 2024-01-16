@@ -15,6 +15,10 @@
 #include "Interfaces/IHttpRequest.h"
 #include "Interfaces/IHttpResponse.h"
 
+#ifdef WIN32
+#define stat _stat
+#endif
+
 using namespace std;
 
 class AppsflyerModule
@@ -133,8 +137,8 @@ public:
 		currentData.Add(UTF8_TO_TCHAR(counter.c_str()));
 		FString len = FString::FromInt(currentData.Num());
 		UE_LOG(LogTemp, Warning, TEXT("Length of data array: %s"), *len);
-		UE_LOG(LogTemp, Warning, TEXT("SAVED ITEM 1: %s"), UTF8_TO_TCHAR(guid_str.c_str()));
-		UE_LOG(LogTemp, Warning, TEXT("SAVED ITEM 2: %s"), UTF8_TO_TCHAR(counter.c_str()));
+		UE_LOG(LogTemp, Warning, TEXT("Saved File 1: %s"), UTF8_TO_TCHAR(guid_str.c_str()));
+		UE_LOG(LogTemp, Warning, TEXT("Saved File 2: %s"), UTF8_TO_TCHAR(counter.c_str()));
 		bool success = FFileHelper::SaveStringArrayToFile(currentData, *dataPath);
 		FString result = success ? ("Successful") : ("Failed");
 		UE_LOG(LogTemp, Warning, TEXT("Saved File: %s"), *result);
@@ -240,9 +244,10 @@ public:
 		struct stat result;
 		if (stat(folderPathCh, &result) == 0)
 		{
-			__time64_t mod_time = result.st_mtime;
-			std::time_t excludeInstallDateBefore = to_time_t(date);
-			double diff = difftime(mod_time, excludeInstallDateBefore);
+			struct tm* mod_time = localtime(&result.st_ctime);
+			std::time_t mod_time_t = result.st_mtime;
+			time_t excludeInstallDateBefore = to_time_t(date);
+			double diff = difftime(mod_time_t, excludeInstallDateBefore);
 			isInstallOlder = diff < 0;
 		}
 
